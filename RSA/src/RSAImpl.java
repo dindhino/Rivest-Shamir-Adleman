@@ -39,7 +39,7 @@ public class RSAImpl implements RSA {
         this.p = p;
         this.q = q;
         modulus = p.multiply(q);
-        privateKey = e.modInverse(phi);//d = e^-1 mod phi, private key is obtained with the multiplative inverse of 'e' mod 'phi'
+        privateKey = e.modInverse(phi);//d = Math.pow(e,-1) mod phi, private key is obtained with the multiplative inverse of 'e' mod 'phi'
     }
 
     @Override
@@ -203,9 +203,8 @@ public class RSAImpl implements RSA {
      * ensures that blocks to encrypt are smaller than modulus
      *
      * @param messages list of blocks to be splited at half recursively
-     * @return list of valid blocs
+     * @return list of valid blocks
      *
-     * @author Rafael M. Pestano - Oct 21, 2012 7:15:19 PM
      */
     private List<BigInteger> getValidEncryptionBlocks(List<String> messages) {
         List<BigInteger> validBlocks = new ArrayList<>();
@@ -215,7 +214,7 @@ public class RSAImpl implements RSA {
                 validBlocks.add(new BigInteger(msg.getBytes()));
             });
             return validBlocks;
-        } else {//message is bigger than modulus so we have o split it
+        } else {//message is bigger than modulus so we have to split it
             return getValidEncryptionBlocks(Utils.splitMessages(messages));
         }
 
@@ -294,12 +293,12 @@ public class RSAImpl implements RSA {
         s += "public key is :\n";
         s += "n = " + modulus + "\n";
         s += "e = " + e + " \n";
-        s += "  -> enc = message**e mod n" + "\n\n";
+        s += "  -> enc = Math.pow(message,e) mod n" + "\n\n";
 
         s += "private key is :\n";
         s += "n = " + modulus + "\n";
         s += "d = " + privateKey + " \n";
-        s += "  -> message = enc**d mod n" + "\n";
+        s += "  -> message = Math.pow(enc,d) mod n" + "\n";
         return s;
     }
 
